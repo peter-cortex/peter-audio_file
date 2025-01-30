@@ -189,7 +189,7 @@ def sequential_pipeline(file_path, src_lan, trg_lan):
         logger.info(f"TTS completed in {tts_time:.2f} seconds.")
 
 if __name__ == "__main__":
-    audio_file = "audio_ita.wav"
+    audio_file = "files_audio/audio_ita.wav"
     src_lan = "it"
     trg_lan = "en"
     sequential_pipeline(audio_file, src_lan, trg_lan)
