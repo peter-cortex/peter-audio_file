@@ -181,7 +181,7 @@ def sequential_pipeline(file_path, src_lan, trg_lan):
         logger.info("Start text to speech...")
         chunk_index = start // (chunk_samples - overlap_samples)
         output_tts_path = f"output_tts_chunk_{chunk_index}.wav"
-        speaker = "audio_ita.wav" #here to specify the base voice to use in tts
+        speaker = "speaker/audio_ita.wav" #here to specify the base voice to use in tts
         start_tts_time = time.time()
         tts_model.tts_to_file(text=translated_text, file_path=output_tts_path, speaker_wav=speaker, language=trg_lan)
         tts_time = time.time() - start_tts_time
