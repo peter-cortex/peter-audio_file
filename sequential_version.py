@@ -11,9 +11,30 @@ import librosa
 import parselmouth
 from parselmouth.praat import call
 import threading
+import csv
+import pandas as pd
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+CSV_FILE = "execution_times.csv"
+with open(CSV_FILE, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Chunk", "STT Time (s)", "Translation Time (s)", "TTS Time (s)", "Urgency Classification Time (parallel)", "Total processing time (s)",])
+def save_execution_time(chunk_index, stt_time, translation_time, tts_time, urgency_time):
+    total_processing_time = round(stt_time + translation_time + tts_time, 3)
+    with open(CSV_FILE, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([chunk_index, stt_time, translation_time, tts_time, urgency_time, total_processing_time])
+
+def append_statistics_to_csv():
+    df = pd.read_csv(CSV_FILE)
+    avg_values = df.iloc[:, 1:6].mean().round(3).tolist()
+    std_values = df.iloc[:, 1:6].std().round(3).tolist()
+    with open(CSV_FILE, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["AVG"] + avg_values)
+        writer.writerow(["STD"] + std_values)
 
 def calculate_phrase_lengths(audio_file):
     #compute phrase lenght (a pharese are word between silence pause)
@@ -98,7 +119,7 @@ def classify_urgency(features):
 
     return "URGENT" if is_urgent else "NOT URGENT"
 
-def sequential_pipeline(file_path, src_lan, trg_lan):
+def sequential_pipeline(file_path, src_lan, trg_lan, chunk_duration, speaker_voice):
     #caricamento modelli
     device = "cuda" if torch.cuda.is_available() else "cpu"
     compute_type = "float32"
@@ -119,7 +140,6 @@ def sequential_pipeline(file_path, src_lan, trg_lan):
     tts_model = TTS(model_name="tts_models/multilingual/multi-dataset/xtts_v2").to(device)
 
     audio, sample_rate = torchaudio.load(file_path)
-    chunk_duration = 5  # Duration chunk
     chunk_overlap = 0.3  # Overlap between chunks
     chunk_samples = int(chunk_duration * sample_rate)
     overlap_samples = int(chunk_overlap * sample_rate)
@@ -134,32 +154,43 @@ def sequential_pipeline(file_path, src_lan, trg_lan):
 
         logger.info(f"Compute chunk: {start/sample_rate:.2f} - {end/sample_rate:.2f} seconds")
 
-        temp_chunk_path = "temp_chunk.wav"
+        temp_chunk_path = "output_temp/temp_chunk.wav"
         torchaudio.save(temp_chunk_path, audio_chunk, sample_rate)
         audio_chunk_np = whisperx.load_audio(temp_chunk_path)
+        chunk_index = start // (chunk_samples - overlap_samples)
+        result_dict = {}
 
-
-        def classification_task(path):
+        def classification_task(path, result_dict, chunk_index):
                 try:
                     #num_words = len(text.split())
+                    start_urgency_time = time.time()
                     features = extract_urgency_features(path)
+                    #logger.info(f"fundamental frequency for chunk {chunk_index}: {features['f0_mean']}")
                     classification = classify_urgency(features)
                     logger.info(f"Urgency classification: {classification}")
+                    urgency_time = time.time() - start_urgency_time
+                    logger.info(f"Urgency classified in: {urgency_time:.3f} for chunk {chunk_index}")
+                    result_dict[chunk_index] = urgency_time
                     #os.remove(path)
                 except Exception as e:
                     logger.error(f"Error in classification: {str(e)}")
+                    result_dict[chunk_index] = 0.0
 
         classification_thread = threading.Thread(
                 target=classification_task,
-                args=(temp_chunk_path,)
+                args=(temp_chunk_path, result_dict, chunk_index)
             )
         classification_thread.start()
+
+
 
         logger.info("Start transcription...")
         start_stt_time = time.time() #timer for stt
         result = whisper_model.transcribe(audio_chunk_np, batch_size=16, language=src_lan)
+        if not result["segments"]:
+            logger.info("No active speech found in audio, skipping chunk.")
+            continue
         aligned_result = whisperx.align(result["segments"], align_model, align_metadata, temp_chunk_path, device)
-
         current_transcription = " ".join(segment['text'] for segment in aligned_result["segments"])
         logger.info(f"text: {current_transcription}")
 
@@ -179,17 +210,25 @@ def sequential_pipeline(file_path, src_lan, trg_lan):
 
         # Text to speech
         logger.info("Start text to speech...")
-        chunk_index = start // (chunk_samples - overlap_samples)
-        output_tts_path = f"output_tts_chunk_{chunk_index}.wav"
-        speaker = "speaker/audio_ita.wav" #here to specify the base voice to use in tts
+
+        output_tts_path = f"output_tts_chunks/output_tts_chunk_{chunk_index}.wav"
+        #speaker = "audio_ita.wav" #here to specify the base voice to use in tts
         start_tts_time = time.time()
-        tts_model.tts_to_file(text=translated_text, file_path=output_tts_path, speaker_wav=speaker, language=trg_lan)
+        tts_model.tts_to_file(text=translated_text, file_path=output_tts_path, speaker_wav=speaker_voice, language=trg_lan)
         tts_time = time.time() - start_tts_time
         logger.info(f"output tts chunk saved as:{output_tts_path}")
         logger.info(f"TTS completed in {tts_time:.2f} seconds.")
 
+        #save times in csv
+        classification_thread.join()
+        urgency_time = result_dict.get(chunk_index, 0.0)
+        save_execution_time(chunk_index, round(transcription_time, 2) , round(translation_time, 2), round(tts_time, 2), round(urgency_time, 3))
+    append_statistics_to_csv()
+
 if __name__ == "__main__":
-    audio_file = "files_audio/audio_ita.wav"
-    src_lan = "it"
-    trg_lan = "en"
-    sequential_pipeline(audio_file, src_lan, trg_lan)
+    audio_file = "audio_input/audio_en.wav"
+    speaker_voice = "speakers/audio_ita.wav"
+    chunk_duration = 5
+    src_lan = "en"
+    trg_lan = "fr"
+    sequential_pipeline(audio_file, src_lan, trg_lan, chunk_duration, speaker_voice)
