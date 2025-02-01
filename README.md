@@ -8,7 +8,7 @@ Since the script uses whisperX, it is necessary to have ffmpeg installed:
 
 ## To run the script:
 1. Open the requirements.txt file and install the libraries one by one.
-2. run python3 sequential_pipeline.py
+2. run python3 sequential_version.py
 3. The parameters that can be changed are within the main, they are: file to be translated, source language, target language, chunk size and speaker.
 
 ## Outputs:
