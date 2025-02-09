@@ -185,8 +185,8 @@ def tts_phase(tts_model, text, trg_lan, classification, chunk_index, output_dir=
     output_path = os.path.join(output_dir, f"output_tts_chunk_{chunk_index}.wav")
     logger.info("Start text-to-speech (TTS)...")
     start_time = time.time()
-    multi_speaker_urgent = ["my_urgent_audio_1.wav", "my_urgent_audio_2.wav"]
-    multi_speaker_not_urgent = ["my_not_urgent_audio_1.wav", "my_not_urgent_audio_2.wav"]
+    multi_speaker_urgent = ["speakers/my_urgent_audio_1.wav", "speakers/my_urgent_audio_2.wav"]
+    multi_speaker_not_urgent = ["speakers/my_not_urgent_audio_1.wav", "speakers/my_not_urgent_audio_2.wav"]
     speaker_wavs = multi_speaker_urgent if classification == "URGENT" else multi_speaker_not_urgent
     tts_model.tts_to_file(text=text, file_path=output_path, speaker_wav=speaker_wavs, language=trg_lan)
     tts_time = time.time() - start_time
