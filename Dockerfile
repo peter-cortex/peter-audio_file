@@ -45,7 +45,7 @@ RUN python -c "import whisperx; _ = whisperx.load_model('turbo', device='cpu', c
 RUN echo "y" | python -c "from TTS.api import TTS; _ = TTS(model_name='tts_models/multilingual/multi-dataset/xtts_v2', progress_bar=False)"
 
 
-COPY test_whisperX.py /app/
+COPY sequential_version.py /app/
 COPY ita_emergenza.wav /app/
 COPY speakers /app/speakers
 COPY my_urgent_audio_1.wav /app/
@@ -55,4 +55,4 @@ COPY my_not_urgent_audio_2.wav /app/
 
 ENV COQUI_TOS_AGREED=1
 
-CMD ["python", "test_whisperX.py"]
+CMD ["python", "sequential_version.py"]
