@@ -3,9 +3,10 @@ Sequential version of the pipeline for file audio
 
 
 ## To run the script:
-1. Build the Dockerfile: sudo docker build -t my-peter-app .
-2. Run the builded container (with gpu) :  sudo docker run --gpus all -it my-peter-app
-3. To run the script with the parameters and personalized audio file:  
+1. Build the Dockerfile: ```bash
+   sudo docker build -t my-peter-app .
+3. Run the builded container (with gpu) :  sudo docker run --gpus all -it my-peter-app
+4. To run the script with the parameters and personalized audio file:  
    sudo docker run --gpus all -it -v $(pwd)/file_audio.wav:/app/file_audio.wav my-peter-app --audio_file /app/audio_en.wav --src it --trg en --chunk_duration 5
  
 
