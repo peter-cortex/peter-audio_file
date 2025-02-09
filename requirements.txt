@@ -1,5 +1,11 @@
-pip install git+https://github.com/m-bain/whisperx.git
-pip install TTS
-pip install librosa
-pip install praat-parselmouth
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+--index-url https://pypi.org/simple
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+git+https://github.com/m-bain/whisperx.git
+transformers
+TTS
+librosa
+praat-parselmouth
+torch==2.5.0
+torchvision==0.20.0
+torchaudio==2.5.0
