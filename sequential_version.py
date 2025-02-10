@@ -269,4 +269,12 @@ if __name__ == "__main__":
     chunk_duration = 5
     src_lan = "en"
     trg_lan = "it"
-    sequential_pipeline(audio_file, src_lan, trg_lan, chunk_duration)
+    #sequential_pipeline(audio_file, src_lan, trg_lan, chunk_duration)
+    parser = argparse.ArgumentParser(description="Esegui la pipeline STT/Translation/TTS")
+    parser.add_argument("--audio_file", type=str, default="audio_en.wav", help="Audio file path")
+    parser.add_argument("--src", type=str, default="en", help="Source Language (es. 'en, fr, de')")
+    parser.add_argument("--trg", type=str, default="it", help="Destination Language (es. 'en, fr, de')")
+    parser.add_argument("--chunk_duration", type=int, default=5, help="Time for each chunk (suggested: 5 seconds)")
+    args = parser.parse_args()
+    #sequential_pipeline(audio_file, src_lan, trg_lan, chunk_duration)
+    sequential_pipeline(args.audio_file, args.src, args.trg, args.chunk_duration)
