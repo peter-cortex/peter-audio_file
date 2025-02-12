@@ -238,6 +238,7 @@ def sequential_pipeline(file_path, src_lan, trg_lan, chunk_duration):
         classification_thread.join()
         urgency_time = urgency_result.get("urgency_time", 0.0)
         classification = urgency_result.get("classification", "NOT URGENT")
+        logger.info(f"Chunk {chunk_index} classified as: {classification}")
 
         output_tts_path, tts_time = tts_phase(tts_model, translated_text, trg_lan, classification, chunk_index)
 
