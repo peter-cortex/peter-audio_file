@@ -46,13 +46,12 @@ RUN echo "y" | python -c "from TTS.api import TTS; _ = TTS(model_name='tts_model
 
 
 COPY sequential_version.py /app/
-COPY ita_emergenza.wav /app/
-COPY audio_en.wav /app/
 COPY speakers /app/speakers
-COPY my_urgent_audio_1.wav /app/
-COPY my_urgent_audio_2.wav /app/
-COPY my_not_urgent_audio_1.wav /app/
-COPY my_not_urgent_audio_2.wav /app/
+COPY speakers/audio_en.wav /app/
+COPY speakers/my_urgent_audio_1.wav /app/
+COPY speakers/my_urgent_audio_2.wav /app/
+COPY speakers/my_not_urgent_audio_1.wav /app/
+COPY speakers/my_not_urgent_audio_2.wav /app/
 
 ENV COQUI_TOS_AGREED=1
 
