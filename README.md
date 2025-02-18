@@ -9,7 +9,7 @@ sudo docker build -t my-peter-app .
 ```
 2. Run the builded container (with gpu) :
 ```bash
-sudo docker run --gpus all -it my-peter-app
+ sudo docker run --gpus all -it -v "$(pwd)/output:/app/output" my-peter-app
 ```
 3. To run the script with the parameters and personalized audio file:  
 ```bash
