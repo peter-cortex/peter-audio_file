@@ -260,7 +260,8 @@ def sequential_pipeline(file_path, src_lan, trg_lan, chunk_duration):
         final_audio = tts_audio_chunks[0]
         for chunk in tts_audio_chunks[1:]:
             final_audio = apply_crossfade(final_audio, chunk, crossfade_duration, tts_output_sample_rate)
-        final_output_path = "final_output.wav"
+        final_output_path = "/app/output/final_output.wav"
+        #final_output_path = "final_output.wav"
         torchaudio.save(final_output_path, final_audio, tts_output_sample_rate)
         logger.info(f"Final merged TTS audio saved as: {final_output_path}")
     else:
