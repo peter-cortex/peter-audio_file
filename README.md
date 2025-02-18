@@ -15,6 +15,7 @@ sudo docker run --gpus all -it my-peter-app
 ```bash
  sudo docker run --gpus all -it -v "$(pwd)/file_audio:/app/audio_input" -v "$(pwd)/output:/app/output" my-peter-app --audio_file /app/audio_input/audio_en.wav --src en --trg fr --chunk_duration 5
 ```
+The input audio must be placed inside the audio_input folder
  
 
 ## Outputs:
