@@ -167,8 +167,9 @@ def stt_phase(whisper_model, align_model, align_metadata, chunk_path, device, sr
 def translation_phase(translation_model, tokenizer, text, src_lan, trg_lan, device):
     logger.info("Start translation...")
     start_time = time.time()
-    src_text = f">>{src_lan}<< {text.strip()}"
-    translated = translation_model.generate(**tokenizer(src_text, return_tensors="pt", padding=True).to(device), do_sample=False)
+    src_text = f"{text.strip()}"
+    src_text = re.sub(r'[,.!]', '', src_text)
+    translated = translation_model.generate(**tokenizer(src_text, return_tensors="pt", padding=False, truncation=False).to(device), do_sample=False)
     translated_text = tokenizer.decode(translated[0], skip_special_tokens=True)
     if translated_text:
         translated_text = translated_text.replace('.', ',')
