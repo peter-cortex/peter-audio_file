@@ -14,6 +14,7 @@ import threading
 import csv
 import pandas as pd
 import argparse
+import re
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
