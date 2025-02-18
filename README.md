@@ -21,3 +21,10 @@ sudo docker run --gpus all -it -v $(pwd)/file_audio.wav:/app/file_audio.wav my-p
 - The final audio with all the chunk merged is final_output.wav
 - The file execution_times.csv in the home folder contains the csv with the times recorded for that execution.
 
+## Possible errors in building phase:
+If the building stops at FROM ubuntu:22.04, it is necessary to download the image from Docker:
+```bash
+docker pull ubuntu:22.04
+```
+If the building stops at libcudnn 8 not found probably CUDA or cuDNN are not installed, please do so. 
+
