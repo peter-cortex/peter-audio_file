@@ -8,12 +8,12 @@ Sequential version of the pipeline for file audio
 sudo docker build -t my-peter-app .
 ```
 4. Run the builded container (with gpu) :
-   ```bash
-   sudo docker run --gpus all -it my-peter-app
-   ```
+```bash
+sudo docker run --gpus all -it my-peter-app
+```
 6. To run the script with the parameters and personalized audio file:  
 ```bash
-   sudo docker run --gpus all -it -v $(pwd)/file_audio.wav:/app/file_audio.wav my-peter-app --audio_file /app/audio_en.wav --src en --trg fr --chunk_duration 5
+sudo docker run --gpus all -it -v $(pwd)/file_audio.wav:/app/file_audio.wav my-peter-app --audio_file /app/audio_en.wav --src en --trg fr --chunk_duration 5
 ```
  
 
