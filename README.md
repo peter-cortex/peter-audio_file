@@ -20,7 +20,6 @@ The input audio must be placed inside the audio_input folder
 
 ## Outputs:
 - The final audio with all the chunk merged is output/final_output.wav
-- The file execution_times.csv in the home folder contains the csv with the times recorded for that execution.
 
 ## Possible errors in building phase:
 If the building stops at FROM ubuntu:22.04, it is necessary to download the image from Docker:
