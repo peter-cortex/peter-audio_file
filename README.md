@@ -13,7 +13,7 @@ sudo docker build -t my-peter-app .
 ```
 3. To run the script with the parameters and personalized audio file:  
 ```bash
- sudo docker run --gpus all -it -v "$(pwd)/file_audio:/app/audio_input" -v "$(pwd)/output:/app/output" my-peter-app --audio_file /app/audio_input/audio_en.wav --src en --trg fr --chunk_duration 5
+ sudo docker run --gpus all -it     -v "$(pwd)/audio_input:/app/audio_input"     -v "$(pwd)/output:/app/output"     my-peter-app     python /app/sequential_version.py --audio_file /app/audio_input/audio_fr.wav --src fr --trg en --chunk_duration 5
 ```
 The input audio must be placed inside the audio_input folder
  
