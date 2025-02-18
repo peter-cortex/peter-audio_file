@@ -18,7 +18,7 @@ sudo docker run --gpus all -it my-peter-app
  
 
 ## Outputs:
-- The final audio with all the chunk merged is final_output.wav
+- The final audio with all the chunk merged is output/final_output.wav
 - The file execution_times.csv in the home folder contains the csv with the times recorded for that execution.
 
 ## Possible errors in building phase:
