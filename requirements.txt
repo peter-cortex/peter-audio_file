@@ -5,6 +5,7 @@ git+https://github.com/m-bain/whisperx.git
 transformers
 TTS
 librosa
+jiwer
 praat-parselmouth
 torch==2.5.0
 torchvision==0.20.0
