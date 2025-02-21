@@ -52,7 +52,10 @@ COPY speakers/my_urgent_audio_1.wav /app/
 COPY speakers/my_urgent_audio_2.wav /app/
 COPY speakers/my_not_urgent_audio_1.wav /app/
 COPY speakers/my_not_urgent_audio_2.wav /app/
+COPY wer_compute.py /app/
+COPY wer_audio /app/wer_audio
 
 ENV COQUI_TOS_AGREED=1
 
-CMD ["python", "sequential_version.py"]
+ENTRYPOINT ["python", "peter_file.py"]
+CMD []
